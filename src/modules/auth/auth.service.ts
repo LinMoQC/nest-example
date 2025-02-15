@@ -3,6 +3,7 @@ import { CreateAuth } from './dto/create-auth/create-auth';
 import { UserService } from '../user/user.service';
 import { LoginAuth } from './dto/login-auth/login-auth';
 import { verify } from 'argon2';
+import { generateAccessToken } from 'src/utils/jwt-util';
 
 @Injectable()
 export class AuthService {
@@ -27,7 +28,11 @@ export class AuthService {
             const isPasswordMatched = await verify(user.password, loginAuth.password);
             if (!isPasswordMatched) throw new ForbiddenException('密码错误');
 
-            return 'login success'
+            const accessToken = generateAccessToken(user)
+
+            return {
+                accessToken
+            }
         } catch (error) {
             throw new ForbiddenException(error)
         }
