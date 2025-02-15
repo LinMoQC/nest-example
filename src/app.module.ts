@@ -15,8 +15,11 @@ export class AppModule {
   configure(consumer: MiddlewareConsumer) {
     consumer
       .apply(JwtAuthMiddleware)
-      // 排除auth
-      .exclude({ path: '/auth/(.*)', method: RequestMethod.ALL })
-      .forRoutes('*');
+      // 排除 /auth 路径及其下所有子路径
+      .exclude(
+        { path: 'auth', method: RequestMethod.ALL }, 
+        { path: 'auth/*path', method: RequestMethod.ALL }, 
+      )
+      .forRoutes('*');  // 应用到所有其他路由
   }
 }
